@@ -1,0 +1,307 @@
+A relational database represents a collection of related (two-dimensional) tables.
+
+To retrieve data from a SQL database, we need to write SELECT statements, which are often colloquially refered to as queries.
+
+Select query for a specific columns
+SELECT column, another_column, …
+FROM mytable;
+
+Select query for all columns
+SELECT * 
+FROM mytable;
+
+In order to filter certain results from being returned, we need to use a WHERE clause in the query.
+
+Select query with constraints
+SELECT column, another_column, …
+FROM mytable
+WHERE condition
+    AND/OR another_condition
+    AND/OR …;
+
+
+
+
+1. Find the title of each film
+SELECT Title
+FROM Movies;
+2. Find the director of each film
+SELECT Director
+FROM Movies;
+3. Find the title and director of each film
+SELECT Title, Director
+FROM Movies;
+4. Find the title and year of each film
+SELECT Title, Year
+FROM Movies;
+5. Find all the information about each film
+SELECT *
+FROM Movies;
+Quick Revision
+Task	SQL
+Title only	SELECT Title FROM Movies;
+Director only	SELECT Director FROM Movies;
+Title + Director	SELECT Title, Director FROM Movies;
+Title + Year	SELECT Title, Year FROM Movies;
+All columns	SELECT * FROM Movies;
+
+Rule:
+
+SELECT column_name → fetch specific columns.
+SELECT col1, col2 → fetch multiple columns.
+SELECT * → fetch all columns from the table.
+
+
+
+
+1. Find the movie with a row id of 6
+SELECT *
+FROM Movies
+WHERE Id = 6;
+2. Find the movies released in the years between 2000 and 2010
+SELECT *
+FROM Movies
+WHERE Year BETWEEN 2000 AND 2010;
+
+Output:
+
+Monsters, Inc. (2001)
+Finding Nemo (2003)
+The Incredibles (2004)
+Cars (2006)
+Ratatouille (2007)
+3. Find the movies not released in the years between 2000 and 2010
+SELECT *
+FROM Movies
+WHERE Year NOT BETWEEN 2000 AND 2010;
+
+Output:
+
+Toy Story (1995)
+A Bug's Life (1998)
+Toy Story 2 (1999)
+4. Find the first 5 Pixar movies and their release year
+SELECT Title, Year
+FROM Movies
+ORDER BY Year
+LIMIT 5;
+
+Output:
+
+Title	Year
+Toy Story	1995
+A Bug's Life	1998
+Toy Story 2	1999
+Monsters, Inc.	2001
+Finding Nemo	2003
+
+LIMIT 5 returns only the first 5 rows after sorting by release year in ascending order.
+
+
+
+
+1. Find all the Toy Story movies
+
+Use the LIKE operator to match titles containing "Toy Story".
+
+SELECT *
+FROM Movies
+WHERE Title LIKE 'Toy Story%';
+
+Output:
+
+Toy Story
+Toy Story 2
+Toy Story 3 (if present in the table)
+2. Find all the movies directed by John Lasseter
+SELECT *
+FROM Movies
+WHERE Director = 'John Lasseter';
+
+Output:
+
+Toy Story
+A Bug's Life
+Toy Story 2
+Cars
+3. Find all the movies (and director) not directed by John Lasseter
+SELECT Title, Director
+FROM Movies
+WHERE Director <> 'John Lasseter';
+
+Alternative:
+
+SELECT Title, Director
+FROM Movies
+WHERE Director != 'John Lasseter';
+
+Output:
+
+Monsters, Inc. — Pete Docter
+Finding Nemo — Andrew Stanton
+The Incredibles — Brad Bird
+Ratatouille — Brad Bird
+etc.
+4. Find all the WALL-* movies
+
+The * means "anything after WALL-". In SQL, % is the wildcard character.
+
+SELECT *
+FROM Movies
+WHERE Title LIKE 'WALL-%';
+
+Output:
+
+WALL-E
+
+
+
+SELECT DISTINCT column, another_column, …
+FROM mytable
+WHERE condition(s);
+
+
+
+SELECT column, another_column, …
+FROM mytable
+WHERE condition(s)
+ORDER BY column ASC/DESC;
+
+
+
+Select query with limited rows
+SELECT column, another_column, …
+FROM mytable
+WHERE condition(s)
+ORDER BY column ASC/DESC
+LIMIT num_limit OFFSET num_offset;
+
+
+
+
+1. List all directors of Pixar movies (alphabetically), without duplicates
+
+Use:
+
+DISTINCT → removes duplicates
+ORDER BY → sorts results
+SELECT DISTINCT Director
+FROM Movies
+ORDER BY Director ASC;
+
+Output:
+
+Andrew Stanton
+Dan Scanlon
+John Lasseter
+Lee Unkrich
+Pete Docter
+2. List the last four Pixar movies released (ordered from most recent to least)
+
+Use:
+
+ORDER BY Year DESC → newest first
+LIMIT 4 → return only 4 rows
+SELECT *
+FROM Movies
+ORDER BY Year DESC
+LIMIT 4;
+
+Output:
+
+Title	Year
+Monsters University	2013
+Cars 2	2011
+Toy Story 3	2010
+Up	2009
+3. List the first five Pixar movies sorted alphabetically
+
+Sort by title and take the first 5 rows.
+
+SELECT *
+FROM Movies
+ORDER BY Title ASC
+LIMIT 5;
+
+Output:
+
+Title
+Cars
+Cars 2
+Finding Nemo
+Monsters University
+Toy Story
+4. List the next five Pixar movies sorted alphabetically
+
+Skip the first 5 rows and return the next 5.
+
+SELECT *
+FROM Movies
+ORDER BY Title ASC
+LIMIT 5 OFFSET 5;
+
+Output:
+
+Title
+Toy Story 3
+Up
+
+(Only two rows remain in this dataset after skipping the first five.)
+
+Quick Revision
+DISTINCT
+
+Removes duplicate values.
+
+SELECT DISTINCT Director
+FROM Movies;
+ORDER BY
+
+Ascending (A → Z, Small → Large)
+
+SELECT *
+FROM Movies
+ORDER BY Title ASC;
+
+Descending (Z → A, Large → Small)
+
+SELECT *
+FROM Movies
+ORDER BY Year DESC;
+LIMIT
+
+Return only a certain number of rows.
+
+SELECT *
+FROM Movies
+LIMIT 4;
+OFFSET
+
+Skip a number of rows.
+
+SELECT *
+FROM Movies
+LIMIT 5 OFFSET 5;
+
+Meaning:
+
+Sort the data.
+Skip the first 5 rows.
+Return the next 5 rows.
+
+A common pattern for pagination is:
+
+SELECT *
+FROM Movies
+ORDER BY Title
+LIMIT 5 OFFSET 0;   -- Page 1
+
+SELECT *
+FROM Movies
+ORDER BY Title
+LIMIT 5 OFFSET 5;   -- Page 2
+
+SELECT *
+FROM Movies
+ORDER BY Title
+LIMIT 5 OFFSET 10;  -- Page 3
