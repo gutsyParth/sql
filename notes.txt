@@ -305,3 +305,119 @@ SELECT *
 FROM Movies
 ORDER BY Title
 LIMIT 5 OFFSET 10;  -- Page 3
+
+
+
+1. List all the Canadian cities and their populations
+SELECT City, Population
+FROM North_american_cities
+WHERE Country = 'Canada';
+2. Order all the cities in the United States by their latitude from north to south
+
+Since latitude decreases as we move south, sort by latitude in descending order.
+
+SELECT City
+FROM North_american_cities
+WHERE Country = 'United States'
+ORDER BY Latitude DESC;
+
+Or, if you want to see the latitude too:
+
+SELECT City, Latitude
+FROM North_american_cities
+WHERE Country = 'United States'
+ORDER BY Latitude DESC;
+3. List all the cities west of Chicago, ordered from west to east
+
+Chicago's longitude is approximately -87.629798.
+
+Cities west of Chicago have a longitude less than -87.629798 (more negative).
+
+SELECT City
+FROM North_american_cities
+WHERE Longitude < -87.629798
+ORDER BY Longitude ASC;
+
+Or:
+
+SELECT City, Longitude
+FROM North_american_cities
+WHERE Longitude < -87.629798
+ORDER BY Longitude ASC;
+
+Why ASC?
+
+More negative = farther west
+Less negative = farther east
+
+Example:
+
+-112  (west)
+-103
+ -99
+ -95
+ -87  (east)
+4. List the two largest cities in Mexico (by population)
+SELECT City, Population
+FROM North_american_cities
+WHERE Country = 'Mexico'
+ORDER BY Population DESC
+LIMIT 2;
+
+Output:
+
+City	Population
+Mexico City	8555500
+Guadalajara	1500800
+5. List the third and fourth largest cities (by population) in the United States and their population
+
+Steps:
+
+Consider only U.S. cities.
+Sort by population descending.
+Skip the first two largest cities.
+Return the next two.
+SELECT City, Population
+FROM North_american_cities
+WHERE Country = 'United States'
+ORDER BY Population DESC
+LIMIT 2 OFFSET 2;
+
+Explanation
+
+Suppose the U.S. cities sorted by population are:
+
+Rank	City
+1	New York
+2	Los Angeles
+3	Chicago
+4	Houston
+5	Philadelphia
+
+OFFSET 2 skips:
+
+New York
+Los Angeles
+
+and LIMIT 2 returns:
+
+Chicago
+Houston
+Concepts Used
+Clause	Purpose
+WHERE	Filter rows
+ORDER BY ASC	Small → Large / A → Z
+ORDER BY DESC	Large → Small / Z → A
+LIMIT n	Return first n rows
+OFFSET n	Skip first n rows
+LIMIT n OFFSET m	Skip m rows, then return n rows
+Common Pattern
+SELECT columns
+FROM table
+WHERE condition
+ORDER BY column DESC
+LIMIT n OFFSET m;
+
+This pattern appears very frequently in interviews and real-world SQL queries.
+
+
